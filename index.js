@@ -1,22 +1,29 @@
-const FileManager = require('./filemanager');
+const DataLayer = require('./datalayer');
 
-var transferList, vacancyList;
-const fileManager = new FileManager();
+const dataLayer = new DataLayer();
 
-function getTransferList() {
-    return fileManager.getJSONFromFle('transrequests.json');
-}
+var claimList = {};
 
-function getVacancyList() {
-    return fileManager.getJSONFromFle('vacancy.json');
-}
-
-getTransferList().then(data => {
-    transferList = data;
+/* dataLayer.getTransferList().then(data => {
     console.log(data);
 });
 
-getVacancyList().then(data => {
-    vacancyList = data;
+dataLayer.getVacancyList().then(data => {
     console.log(data);
-});
+}); */
+
+async function prepareClaimList() {
+    var transferList = await dataLayer.getTransferList();
+    for (let aplnt of transferList) {
+        for (claim in aplnt.choices) {
+            if (claimList[aplnt.applicant]) {
+                claimList[aplnt.applicant].push(claim);
+            } else {
+                claimList[aplnt.applicant] = [claim];
+            }
+        }
+    }
+    console.log(claimList);
+}
+
+prepareClaimList();
