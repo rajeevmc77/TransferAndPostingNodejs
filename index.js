@@ -46,6 +46,55 @@ function canClaimVacancy(priorityClaims){
     }
     return true;
 }
+function doOptimalTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice){
+    var node = {};
+    node[aplnt.applicant] = choice;
+    optimalList.push(node);
+    vlClone.splice(vacancyIndex, 1);
+    vlClone.push(aplnt.posting);
+    var tlIndex = tlClone.findIndex(function(currentValue, index, arr){                    
+            return currentValue.applicant == aplnt.applicant;
+    });
+    tlClone.splice(tlIndex,1);  
+}
+function doTemporaryTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice,choiceIndex){
+    var node = {};      
+    if(claimPos > 0){
+        var priorityClaims = claimList[choice].slice(0,claimPos);                    
+        if(canClaimVacancy(priorityClaims))
+            claimList[choice].splice(claimPos+1);
+        else
+            return;
+    }
+    var tmpIndex = tempList.findIndex(function(currentValue){                
+        return Object.keys(currentValue)[0] == aplnt.applicant;
+    });
+    node[aplnt.applicant] = choice;                
+    if(tmpIndex > -1){
+        tempList[tmpIndex] = node;
+    } else{                    
+        tempList.push(node);
+    }
+    vlClone.splice(vacancyIndex, 1);
+    vlClone.push(aplnt.posting);
+    aplnt.posting = choice;
+    aplnt.choices.splice(0, choiceIndex - 1);
+}
+
+function processTransferRequest(aplnt,vlClone,tlClone){
+    var vacancyIndex;   
+    for (choice of aplnt.choices) {
+        if(( vacancyIndex = vlClone.indexOf(choice)) < 0 ) continue;      
+        if(( claimPos = claimList[choice].indexOf(aplnt.applicant)) < 0 ) continue;             
+        var choiceIndex = aplnt.choices.indexOf(choice);           
+        if (choiceIndex == 0 && claimPos == 0) {
+            doOptimalTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice);            
+        }
+        else {
+            doTemporaryTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice,choiceIndex);
+        }        
+    }
+}
 
 
 async function prepareTransferLists() {
@@ -54,51 +103,7 @@ async function prepareTransferLists() {
     var vlClone = Object.assign([], vacancyList.vacancy);
     console.log('Init vlClone ' + vlClone);
     for (let aplnt of tlClone) {
-        for (choice of aplnt.choices) {
-            var vacancyIndex = vlClone.indexOf(choice);
-            if (vacancyIndex < 0) continue;
-            var applicantName = aplnt.applicant;         
-            var claimPos = claimList[choice].indexOf(applicantName);
-            if (claimPos < 0) continue;            
-            var choiceIndex = aplnt.choices.indexOf(choice);
-            var node = {};        
-            if (choiceIndex === 0 && claimPos === 0) {
-                node[applicantName] = choice;
-                optimalList.push(node);
-                vlClone.splice(vacancyIndex, 1);
-                vlClone.push(aplnt.posting);
-                var tlIndex = tlClone.findIndex(function(currentValue, index, arr){                    
-                        return currentValue.applicant == applicantName;
-                });
-                tlClone.splice(tlIndex,1);
-                break;
-            }
-            else {
-                var applicantName = aplnt.applicant;
-                if(claimPos > 0){
-                    var priorityClaims = claimList[choice].slice(0,claimPos);                    
-                    if(canClaimVacancy(priorityClaims)){
-                        claimList[choice].splice(claimPos+1);
-                    }
-                    else{
-                        continue
-                    }
-                }
-                var tmpIndex = tempList.findIndex(function(currentValue){                
-                    return Object.keys(currentValue)[0] == applicantName;
-                });
-                node[applicantName] = choice;                
-                if(tmpIndex > -1){
-                    tempList[tmpIndex] = node;
-                } else{                    
-                    tempList.push(node);
-                }
-                vlClone.splice(vacancyIndex, 1);
-                vlClone.push(aplnt.posting);
-                aplnt.posting = choice;
-                aplnt.choices.splice(0, choiceIndex - 1);
-            }        
-        }
+        processTransferRequest(aplnt,vlClone,tlClone);
     }
      console.log('final  vlClone ' + vlClone);
      // console.log(tlClone);
