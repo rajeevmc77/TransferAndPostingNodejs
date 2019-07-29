@@ -101,7 +101,7 @@ function doTemporaryTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice,choiceInd
     vlClone.splice(vacancyIndex, 1);
     vlClone.push(aplnt.posting);
     aplnt.posting = choice;
-    aplnt.choices.splice(0, choiceIndex - 1);
+    aplnt.choices.splice(choiceIndex );
 }
 
 function processTransferRequest(aplnt,vlClone,tlClone){
@@ -124,10 +124,10 @@ async function prepareTransferLists() {
     var vlClone = Object.assign([], vacancyList.vacancy);   
     for (let aplnt of tlClone) {
         processTransferRequest(aplnt,vlClone,tlClone);
-    }
+    }  
      // console.log('final  vlClone ' + vlClone);
-     console.log("Transfer List");     
-     console.log(transferList);
+     //console.log("Transfer List");     
+     //console.log(transferList);
      console.log("Transfer Clone List"); 
      console.log(tlClone);
      console.log("Claim List"); 
