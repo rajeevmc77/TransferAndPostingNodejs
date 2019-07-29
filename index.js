@@ -126,13 +126,13 @@ function processTransferRequest(aplnt,vlClone,tlClone){
 async function prepareTransferLists() {
     await init();   
     var tlClone = JSON.parse(JSON.stringify(transferList));
-    var vlClone = Object.assign([], vacancyList.vacancy);
-    console.log('Init vlClone ' + vlClone);
+    var vlClone = Object.assign([], vacancyList.vacancy);   
     for (let aplnt of tlClone) {
         processTransferRequest(aplnt,vlClone,tlClone);
     }
-     console.log('final  vlClone ' + vlClone);
-     // console.log(tlClone);
+     // console.log('final  vlClone ' + vlClone);     
+     console.log(transferList);
+     console.log(tlClone);
      console.log(claimList);
      console.log(tempList);
      console.log(optimalList);
