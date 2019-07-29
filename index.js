@@ -29,13 +29,9 @@ async function init() {
 }
 
 function canClaimVacancy(priorityClaims){
-    var tmpList1 = tempList.map(function(val){ 
+    var tmpList = tempList.map(function(val){ 
         return Object.keys(val)[0];
     });
-    var tmpList2 = optimalList.map(function(val){ 
-        return Object.keys(val)[0];
-    });
-    var tmpList = tmpList1.concat(tmpList2);
     for(claimant of priorityClaims){
         if(tmpList.indexOf(claimant) == -1 ){
             return false;
@@ -95,10 +91,10 @@ function updateTempList(node,applicant){
 }
 function doTemporaryTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice,choiceIndex,claimPos){
     var node = {};      
-    if(claimPos >= 0){
+    if(claimPos > 0){
         var priorityClaims = claimList[choice].slice(0,claimPos);                    
         if(!canClaimVacancy(priorityClaims)) return;
-        claimList[choice].splice(claimPos+1);        
+        claimList[choice].splice(claimPos);        
     }
     node[aplnt.applicant] = choice; 
     updateTempList(node,aplnt.applicant);
