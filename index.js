@@ -54,6 +54,20 @@ function clearClaimListFor(applicant){
         }       
     }    
 }
+
+function clearClaimOfApplicantFor(applicant,postings){
+    for(posting of postings){
+        claimList[posting].forEach(function(currentValue,index,arr){
+            if(applicant == currentValue){
+                arr.splice(index,1);
+            }
+        }); 
+        if(claimList[claim].length == 0) {
+            delete claimList[claim];
+        }
+    }  
+}
+
 function clearTransferOptionsFor(currentPosting,lst){
     for(aplnt in lst){
         lst[aplnt].choices.forEach((currentValue,index,arr)=>{
@@ -67,8 +81,7 @@ function clearTransferListFor(applicant,currentPosting,lst){
     clearTransferOptionsFor(currentPosting,lst);
     var tlIndex = lst.findIndex(function(currentValue){                    
         return currentValue.applicant == applicant;
-    });
-    lst.splice(tlIndex,1); 
+    });     
 }
 function doOptimalTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice){
     var node = {};
@@ -93,15 +106,15 @@ function doTemporaryTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice,choiceInd
     var node = {};      
     if(claimPos > 0){
         var priorityClaims = claimList[choice].slice(0,claimPos);                    
-        if(!canClaimVacancy(priorityClaims)) return;
-        claimList[choice].splice(claimPos);        
+        if(!canClaimVacancy(priorityClaims)) return;              
     }
     node[aplnt.applicant] = choice; 
     updateTempList(node,aplnt.applicant);
     vlClone.splice(vacancyIndex, 1);
     vlClone.push(aplnt.posting);
     aplnt.posting = choice;
-    aplnt.choices.splice(choiceIndex );
+    var removedchoices = aplnt.choices.splice(choiceIndex + 1 );
+    clearClaimOfApplicantFor(aplnt.applicant,removedchoices);
 }
 
 function processTransferRequest(aplnt,vlClone,tlClone){
