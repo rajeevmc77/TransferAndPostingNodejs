@@ -46,16 +46,26 @@ function canClaimVacancy(priorityClaims){
     }
     return true;
 }
+function clearClaimsInClaimListFor(applicant){
+    for ( claim in claimList){
+        claimList[claim].forEach( function(currentValue,index,arr){
+            if(applicant == currentValue){
+                arr.splice(index,1);
+            }
+        });        
+    }
+}
 function doOptimalTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice){
     var node = {};
     node[aplnt.applicant] = choice;
     optimalList.push(node);
     vlClone.splice(vacancyIndex, 1);
     vlClone.push(aplnt.posting);
-    var tlIndex = tlClone.findIndex(function(currentValue, index, arr){                    
+    var tlIndex = tlClone.findIndex(function(currentValue){                    
             return currentValue.applicant == aplnt.applicant;
     });
-    tlClone.splice(tlIndex,1);  
+    tlClone.splice(tlIndex,1); 
+    clearClaimsInClaimListFor(aplnt.applicant);     
 }
 function doTemporaryTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice,choiceIndex){
     var node = {};      
@@ -112,9 +122,5 @@ async function prepareTransferLists() {
      console.log(optimalList);
 
 }
-
-
-
-
 
 prepareTransferLists();
