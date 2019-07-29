@@ -55,14 +55,17 @@ function clearClaimListFor(applicant){
         });        
     }
 }
-function clearTransferListFor(applicant,choice,lst){
+function clearTransferOptionsFor(currentPosting,lst){
     for(aplnt in lst){
         lst[aplnt].choices.forEach((currentValue,index,arr)=>{
-            if(choice == currentValue){
+            if(currentPosting == currentValue){
                 arr.splice(index,1);
             }
         });
-    }
+    }    
+}
+function clearTransferListFor(applicant,currentPosting,lst){
+    clearTransferOptionsFor(currentPosting,lst);
     var tlIndex = lst.findIndex(function(currentValue){                    
         return currentValue.applicant == applicant;
     });
@@ -77,6 +80,16 @@ function doOptimalTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice){
     clearTransferListFor(aplnt.applicant,aplnt.posting,tlClone); 
     clearClaimListFor(aplnt.applicant);     
 }
+function updateTempList(node,applicant){
+    var tmpIndex = tempList.findIndex(function(currentValue){                
+        return Object.keys(currentValue)[0] == applicant;
+    });                   
+    if(tmpIndex > -1){
+        tempList[tmpIndex] = node;
+    } else{                    
+        tempList.push(node);
+    }
+}
 function doTemporaryTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice,choiceIndex,claimPos){
     var node = {};      
     if(claimPos > 0){
@@ -86,15 +99,8 @@ function doTemporaryTransfer(vlClone,tlClone,vacancyIndex,aplnt,choice,choiceInd
         else
             return;
     }
-    var tmpIndex = tempList.findIndex(function(currentValue){                
-        return Object.keys(currentValue)[0] == aplnt.applicant;
-    });
-    node[aplnt.applicant] = choice;                
-    if(tmpIndex > -1){
-        tempList[tmpIndex] = node;
-    } else{                    
-        tempList.push(node);
-    }
+    node[aplnt.applicant] = choice; 
+    updateTempList(node,aplnt.applicant);
     vlClone.splice(vacancyIndex, 1);
     vlClone.push(aplnt.posting);
     aplnt.posting = choice;
