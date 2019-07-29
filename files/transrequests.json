@@ -1,7 +1,7 @@
 [
-{"rank":1, "applicant":"Rajeev", "posting":"1004", "choices": ["1007","1001","1003"]},
-{"rank":2, "applicant":"Manooja", "posting":"1005","choices": ["1003","1002","1006"]},
-{"rank":3, "applicant":"Narayani", "posting":"1006","choices": ["1005","1004","1001"]},
-{"rank":4, "applicant":"Akshara", "posting":"1007","choices": ["1001","1002","1006"]},
-{"rank":5, "applicant":"Rajesh", "posting":"1008","choices": ["1004","1003","1006"]}
+{"rank":1, "applicant":"A1", "posting":"1004", "choices": ["1007","1001","1003"]},
+{"rank":2, "applicant":"A2", "posting":"1005","choices": ["1003","1002","1006"]},
+{"rank":3, "applicant":"A3", "posting":"1006","choices": ["1005","1004","1001"]},
+{"rank":4, "applicant":"A4", "posting":"1007","choices": ["1001","1002","1006"]},
+{"rank":5, "applicant":"A5", "posting":"1008","choices": ["1004","1003","1006"]}
 ]
